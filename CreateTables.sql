@@ -1,0 +1,61 @@
+CREATE TABLE ActivityTypes(
+	Id SERIAL PRIMARY KEY,
+	Name VARCHAR(30) NOT NULL
+)
+
+ALTER TABLE ActivityTypes
+	ADD CONSTRAINT AvailableTypes CHECK(Name in ('Strength training', 'Cardio', 'Yoga', 'Dance', 'Injury Rehabilitation'))
+
+CREATE TABLE COUNTRY(
+	Id SERIAL PRIMARY KEY,
+	Name VARCHAR(50) NOT NULL,
+	Population INT,
+	Average_Income FLOAT
+)
+
+CREATE TABLE TrainerType(
+	Id SERIAL PRIMARY KEY,
+	Name VARCHAR(50) NOT NULL
+)
+
+ALTER TABLE TrainerType
+	ADD CONSTRAINT AvailableTypes CHECK(Name in ('Main', 'Helper'))
+
+CREATE TABLE Member(
+	Id SERIAL PRIMARY KEY,
+	Name VARCHAR(50) NOT NULL,
+	Gender CHAR NOT NULL,
+	DOB DATE NOT NULL
+)
+
+ALTER TABLE Member
+	ADD CONSTRAINT Member CHECK(Gender in ('F', 'M'))
+ALTER TABLE Member
+	DROP COLUMN Gender
+ALTER TABLE Member
+	ADD COLUMN GenderId INT REFERENCES Genders(Id)
+
+
+CREATE TABLE FITNESS_CENTER(
+	Id SERIAL PRIMARY KEY,
+	Name VARCHAR(100) NOT NULL,
+	open_at TIME NOT NULL,
+    close_at TIME NOT NULL,
+	Country_Id INT REFERENCES COUNTRY(ID)
+)
+
+CREATE TABLE TRAINER(
+	Id SERIAL PRIMARY KEY,
+	Name VARCHAR(100) NOT NULL,
+	DOB DATE NOT NULL,
+	GenderId INT REFERENCES Genders(Id),
+	Fitness_Center_Id INT REFERENCES FITNESS_CENTER,
+	CountryId INT REFERENCES COUNTRY(Id)
+)
+
+CREATE TABLE Genders(
+	Id SERIAL PRIMARY KEY,
+	Gender CHAR NOT NULL
+)
+ALTER TABLE Genders
+	ADD CONSTRAINT Member CHECK(Gender in ('F', 'M'))
