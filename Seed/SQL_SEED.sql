@@ -1,0 +1,5 @@
+INSERT INTO GENDERS (gender) VALUES
+	('F'),
+	('M')
+
+SELECT * FROM GENDERS
