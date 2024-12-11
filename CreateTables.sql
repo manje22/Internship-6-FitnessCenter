@@ -76,6 +76,9 @@ CREATE TABLE Activity(
 	Fitness_center_id INT REFERENCES FITNESS_CENTER(Id)
 )
 
+ALTER TABLE ACTIVITY
+	ADD COLUMN Main_trainer_id INT REFERENCES TRAINER(ID)
+
 ALTER TABLE Activity
 	--ADD CONSTRAINT CHECK_PRICE_IS_NOTNEGATIVE CHECK(PRICE > 0)
 	ADD CONSTRAINT CHECK_CAPACITY_IS_NOTNEGATIVE CHECK(CAPACITY >0)
@@ -94,22 +97,31 @@ CREATE TABLE Activity_Instance_Member(
 	PRIMARY KEY(Activity_Instance_Id, Member_Id)
 )
 
-CREATE TABLE ACTIVITY_TRAINER(
+CREATE TABLE ACTIVITY_HELPER_TRAINERS(
 	Activity_Id INT REFERENCES ACTIVITY(ID),
 	Trainer_Id INT REFERENCES TRAINER(ID),
-	ActivityType_Id INT REFERENCES ActivityTypes(Id),
 	PRIMARY KEY (Activity_Id, Trainer_Id)
 )
 	  
-ALTER TABLE ACTIVITY_TRAINER
-	ADD COLUMN TRAINER_TYPE INT REFERENCES TRAINERTYPE(ID)
-	
-ALTER TABLE IF EXISTS public.activity_trainer
-    ADD CONSTRAINT activity_trainer_pkey PRIMARY KEY (activity_id, trainer_id)
+
+CREATE OR REPLACE FUNCTION enforce_no_overlap_main_helper()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM activity a
+        WHERE a.id = NEW.activity_id AND a.main_trainer_id = NEW.trainer_id
+    ) THEN
+        RAISE EXCEPTION 'Helper trainer cannot be the main trainer for the activity';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_no_main_helper_overlap
+BEFORE INSERT OR UPDATE ON activity_helper_trainers
+FOR EACH ROW
+EXECUTE FUNCTION enforce_no_overlap_main_helper();
 
 
-CREATE UNIQUE INDEX one_main_trainer_per_activity
-ON ACTIVITY_TRAINER (Activity_Id)
-WHERE TRAINER_TYPE = 3;
-
-SELECT * FROM ACTIVITY_TRAINER WHERE
