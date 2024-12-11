@@ -7,3 +7,11 @@ INSERT INTO TRAINERTYPE (NAME) VALUES
 	('Main'),
 	('Helper')
 
+INSERT INTO ACTIVITYTYPES (NAME) VALUES
+	('Strength training'),
+	('Cardio'),
+	('Yoga'),
+	('Dance'),
+	('Injury Rehabilitation')
+
+SELECT * FROM ACTIVITYTYPES
