@@ -8,3 +8,14 @@ C.name, C.average_income
 FROM TRAINER T
 JOIN GENDERS G ON T.GENDERID = G.ID
 JOIN COUNTRY C ON T.COUNTRYID = C.ID
+
+
+--Naziv i termin održavanja svake sportske igre zajedno s imenima glavnih trenera 
+--(u formatu Prezime, I.; npr. Horvat, M.; Petrović, T.).
+SELECT ATY.NAME AS NAME, AI.DATE, AI.START_TIME,
+CONCAT(SUBSTRING(T.NAME FROM 1 FOR 1), '. ', T.SUR_NAME) AS main_trainer 
+FROM ACTIVITY_INSTANCE AI
+JOIN ACTIVITY A ON A.ID = AI.ACTIVITY_ID
+JOIN ACTIVITYTYPES ATY ON ATY.ID = A.ACTIVITY_TYPE_ID
+JOIN TRAINER T ON T.ID = A.MAIN_TRAINER_ID
+
