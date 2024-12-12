@@ -61,6 +61,11 @@ CREATE TABLE TRAINER(
 	CountryId INT REFERENCES COUNTRY(Id)
 )
 
+ALTER TABLE TRAINER
+	ADD COLUMN SUR_NAME VARCHAR(50) NOT NULL
+
+
+
 CREATE TABLE Genders(
 	Id SERIAL PRIMARY KEY,
 	Gender CHAR NOT NULL
@@ -82,6 +87,30 @@ ALTER TABLE ACTIVITY
 ALTER TABLE Activity
 	--ADD CONSTRAINT CHECK_PRICE_IS_NOTNEGATIVE CHECK(PRICE > 0)
 	ADD CONSTRAINT CHECK_CAPACITY_IS_NOTNEGATIVE CHECK(CAPACITY >0)
+
+
+CREATE OR REPLACE FUNCTION trainer_activity_limit()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (
+        SELECT COUNT(*) 
+        FROM Activity
+        WHERE main_trainer_id = NEW.main_trainer_id
+    ) > 2 THEN
+        RAISE EXCEPTION 'Trainer can be main trainer for up to 2 activites.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trainer_activity_limit_trigger
+BEFORE INSERT OR UPDATE ON Activity
+FOR EACH ROW
+EXECUTE FUNCTION trainer_activity_limit();
+
+
+
 
 
 CREATE TABLE ACTIVITY_INSTANCE(
