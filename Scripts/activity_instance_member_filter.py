@@ -1,6 +1,5 @@
 import pandas as pd
 
-# Read the CSV files into DataFrames
 file_paths = [
     r'C:\Users\uvodi\OneDrive\Desktop\DUMP_Internship\domaciRad\SQL-6\Seed\activity_instance_member.csv',
     r'C:\Users\uvodi\OneDrive\Desktop\DUMP_Internship\domaciRad\SQL-6\Seed\activity_instance_member (1).csv',
