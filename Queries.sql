@@ -27,3 +27,15 @@ GROUP BY F.ID
 ORDER BY COUNT(AI.ID) DESC
 LIMIT 3
 
+--Po svakom terneru koliko trenutno aktivnosti vodi; ako nema aktivnosti, ispiši “DOSTUPAN”,
+--ako ima do 3 ispiši “AKTIVAN”, a ako je na više ispiši “POTPUNO ZAUZET”.
+SELECT CONCAT(T.NAME,' ', T.SUR_NAME) AS Trainer, T.ID, COUNT(A.main_trainer_id),
+CASE
+	WHEN COUNT(A.main_trainer_id) = 0 then 'DOSTUPAN'
+	WHEN COUNT(A.main_trainer_id) <= 3 then 'AKTIVAN'
+	ELSE 'ZAUZET'
+END AS AVAILABILTY
+FROM TRAINER T
+JOIN ACTIVITY A ON A.MAIN_TRAINER_ID = T.ID
+GROUP BY T.ID
+
