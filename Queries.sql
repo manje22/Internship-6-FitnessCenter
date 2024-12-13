@@ -100,13 +100,22 @@ GROUP BY C.NAME
 ORDER BY total_participations DESC
 LIMIT 10;
 
+--Ako aktivnost nije popunjena, ispiši uz nju “IMA MJESTA”,
+--a ako je popunjena ispiši “POPUNJENO”
+SELECT ai.id, a.id, a.capacity, COUNT(aim.member_id),
+    CASE
+        WHEN COUNT(aim.member_id) < a.capacity THEN 'IMA MJESTA'
+        ELSE 'POPUNJENO'
+    END AS status
+FROM activity_instance ai
+JOIN activity a ON ai.activity_id = a.id
+LEFT JOIN activity_instance_member aim ON ai.id = aim.activity_instance_id
+GROUP BY ai.id, a.id, a.capacity
+ORDER BY ai.id;
 
 
-
-
-
-
-
+--10 najplaćenijih trenera, ako po svakoj
+--aktivnosti dobije prihod kao brojSudionika * cijenaPoTerminu
 
 
 
