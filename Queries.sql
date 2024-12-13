@@ -117,6 +117,13 @@ ORDER BY ai.id;
 --10 najplaćenijih trenera, ako po svakoj
 --aktivnosti dobije prihod kao brojSudionika * cijenaPoTerminu
 
-
+SELECT t.name, COUNT(aim.member_id)*a.price as pay
+FROM activity_instance ai
+JOIN activity a ON ai.activity_id = a.id
+JOIN trainer t ON a.main_trainer_id = t.id
+LEFT JOIN activity_instance_member aim ON ai.id = aim.activity_instance_id
+GROUP BY t.name, a.price
+ORDER BY pay DESC
+LIMIT 10
 
 
