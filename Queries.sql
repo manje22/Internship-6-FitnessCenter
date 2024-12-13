@@ -39,3 +39,34 @@ FROM TRAINER T
 JOIN ACTIVITY A ON A.MAIN_TRAINER_ID = T.ID
 GROUP BY T.ID
 
+--Imena svih članova koji trenutno sudjeluju na nekoj aktivnosti.
+SELECT m.name
+from MEMBER M
+WHERE EXISTS (
+	SELECT 1
+	FROM ACTIVITY_INSTANCE_MEMBER AM
+	WHERE AM.MEMBER_ID = M.ID
+)
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
