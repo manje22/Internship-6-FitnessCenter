@@ -79,10 +79,28 @@ ORDER BY C.NAME, aT.NAME
 
 
 --Top 10 država s najvećim brojem sudjelovanja u injury rehabilitation tipu aktivnosti
+SELECT 
+	C.NAME,
+    SUM(participant_counts.participant_count) AS total_participations
+FROM (
+    SELECT 
+        ai.id AS activity_instance_id,
+        COUNT(aim.member_id) AS participant_count
+    FROM activity_instance ai
+    LEFT JOIN activity_instance_member aim ON ai.id = aim.activity_instance_id
+    GROUP BY ai.id
+) participant_counts
+JOIN activity_instance ai ON participant_counts.activity_instance_id = ai.id
+JOIN activity a ON ai.activity_id = a.id
+JOIN fitness_center fc ON a.fitness_center_id = fc.id
+JOIN COUNTRY C ON C.ID = FC.COUNTRY_ID
+JOIN activitytypes at ON a.activity_type_id = at.id
+WHERE at.name = 'Injury Rehabilitation'
+GROUP BY C.NAME
+ORDER BY total_participations DESC
+LIMIT 10;
 
 
-
-s
 
 
 
