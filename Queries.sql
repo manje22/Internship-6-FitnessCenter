@@ -56,11 +56,29 @@ JOIN ACTIVITY_INSTANCE AI ON AI.ACTIVITY_ID = A.ID
 WHERE AI.DATE BETWEEN '2019-01-01' AND '2022-12-31'
 
 
+--Prosječan broj sudjelovanja po tipu aktivnosti po svakoj državi.
+SELECT 
+    c.name,
+    aT.NAME,
+    AVG(participant_count) AS average_participants
+FROM (
+    SELECT 
+        ai.id AS activity_instance_id,
+        COUNT(aim.member_id) AS participant_count
+    FROM activity_instance ai
+    LEFT JOIN activity_instance_member aim ON ai.id = aim.activity_instance_id
+    GROUP BY ai.id
+) participant_counts
+JOIN activity_instance ai ON participant_counts.activity_instance_id = ai.id
+JOIN activity a ON ai.activity_id = a.id
+JOIN ACTIVITYTYPES AT ON AT.ID = A.ACTIVITY_TYPE_ID
+JOIN fitness_center fc ON a.fitness_center_id = fc.id
+JOIN COUNTRY C ON C.ID = FC.COUNTRY_ID
+GROUP BY C.NAME, aT.NAME
+ORDER BY C.NAME, aT.NAME
 
 
-
-
-
+--Top 10 država s najvećim brojem sudjelovanja u injury rehabilitation tipu aktivnosti
 
 
 
